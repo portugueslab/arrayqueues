@@ -37,7 +37,7 @@ class ArrayView:
                 item[2] < self.n_items)
 
 
-class SharedArrayQueue:
+class ArrayQueue:
     """ A drop-in replacement for the multiprocessing queue, usable
      only for numpy arrays, which removes the need for pickling and
      should provide higher speeds and lower memory usage
@@ -64,7 +64,7 @@ class SharedArrayQueue:
         return self.current_view.pop(aritem[2])
 
 
-class TimestampedArrayQueue(SharedArrayQueue):
+class TimestampedArrayQueue(ArrayQueue):
     """ A small extension to support timestamps saved alongside arrays
 
     """
