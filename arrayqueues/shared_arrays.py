@@ -1,14 +1,14 @@
-from multiprocessing import Queue, Array, Process
+from multiprocessing import Queue, Array
 import numpy as np
 from datetime import datetime
 
 
 class ArrayView:
-    def __init__(self, array, maxbytes, dtype, el_shape, i_item=0):
+    def __init__(self, array, max_bytes, dtype, el_shape, i_item=0):
         self.dtype = dtype
         self.el_shape = el_shape
         self.nbytes_el = self.dtype.itemsize * np.product(self.el_shape)
-        self.n_items = int(np.floor(maxbytes / self.nbytes_el))
+        self.n_items = int(np.floor(max_bytes / self.nbytes_el))
         self.total_shape = (self.n_items,) + self.el_shape
         self.i_item = i_item
         self.view = np.frombuffer(array, dtype, np.product(self.total_shape)).reshape(self.total_shape)
@@ -20,6 +20,7 @@ class ArrayView:
         return False
 
     def push(self, element):
+        # TODO warn when overwriting an unread item
         self.view[self.i_item, ...] = element
         i_inserted = self.i_item
         self.i_item = (self.i_item + 1) % self.n_items
