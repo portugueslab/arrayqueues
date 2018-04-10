@@ -43,8 +43,8 @@ class ArrayQueue:
      should provide higher speeds and lower memory usage
 
     """
-    def __init__(self, maxbytes=100000000):
-        self.maxbytes = maxbytes
+    def __init__(self, max_mbytes=10):
+        self.maxbytes = int(max_mbytes*1000000)
         self.array = Array('c', self.maxbytes)
         self.current_view = None
         self.queue = Queue()
