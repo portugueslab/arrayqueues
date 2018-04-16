@@ -1,7 +1,7 @@
 from multiprocessing import Queue, Array
 import numpy as np
 from datetime import datetime
-
+from queue import Empty, Full
 
 class ArrayView:
     def __init__(self, array, max_bytes, dtype, el_shape, i_item=0):
@@ -20,7 +20,6 @@ class ArrayView:
         return False
 
     def push(self, element):
-        # TODO warn when overwriting an unread item
         self.view[self.i_item, ...] = element
         i_inserted = self.i_item
         self.i_item = (self.i_item + 1) % self.n_items
@@ -46,22 +45,39 @@ class ArrayQueue:
     def __init__(self, max_mbytes=10):
         self.maxbytes = int(max_mbytes*1000000)
         self.array = Array('c', self.maxbytes)
-        self.current_view = None
+        self.view = None
         self.queue = Queue()
+        self.read_queue = Queue()
+        self.last_item = 0
+
+    def check_full(self):
+        while True:
+            try:
+                self.last_item = self.read_queue.get(timeout=0.000001)
+            except Empty:
+                break
+        if self.view.i_item == self.last_item:
+            raise Full("Queue of length {} full when trying to insert {}, last item read was {}".format(self.view.n_items,
+                                                                                                        self.view.i_item, self.last_item))
 
     def put(self, element):
-        if self.current_view is None or not self.current_view.fits(element):
-            self.current_view = ArrayView(self.array.get_obj(), self.maxbytes,
-                                          element.dtype, element.shape)
-        qitem = self.current_view.push(element)
+        if self.view is None or not self.view.fits(element):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  element.dtype, element.shape)
+            self.last_item = 0
+        else:
+            self.check_full()
+        qitem = self.view.push(element)
+
         self.queue.put(qitem)
 
     def get(self, **kwargs):
         aritem = self.queue.get(**kwargs)
-        if self.current_view is None or not self.current_view.fits(aritem):
-            self.current_view = ArrayView(self.array.get_obj(), self.maxbytes,
-                                          *aritem)
-        return self.current_view.pop(aritem[2])
+        if self.view is None or not self.view.fits(aritem):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  *aritem)
+        self.read_queue.put(aritem[2])
+        return self.view.pop(aritem[2])
 
 
 class TimestampedArrayQueue(ArrayQueue):
@@ -69,17 +85,20 @@ class TimestampedArrayQueue(ArrayQueue):
 
     """
     def put(self, element, timestamp=None):
-        if self.current_view is None or not self.current_view.fits(element):
-            self.current_view = ArrayView(self.array.get_obj(), self.maxbytes,
-                                          element.dtype, element.shape)
-        qitem = self.current_view.push(element)
+
+        if self.view is None or not self.view.fits(element):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  element.dtype, element.shape)
+        qitem = self.view.push(element)
         if timestamp is None:
             timestamp = datetime.now()
+
         self.queue.put((timestamp, qitem))
 
     def get(self, **kwargs):
         timestamp, aritem = self.queue.get(**kwargs)
-        if self.current_view is None or not self.current_view.fits(aritem):
-            self.current_view = ArrayView(self.array.get_obj(), self.maxbytes,
-                                          *aritem)
-        return timestamp, self.current_view.pop(aritem[2])
+        if self.view is None or not self.view.fits(aritem):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  *aritem)
+        self.read_queue.put(aritem[2])
+        return timestamp, self.view.pop(aritem[2])
