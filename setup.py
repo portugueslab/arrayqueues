@@ -2,9 +2,29 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(name='arrayqueues',
-      version='0.1',
+      version='1.0.0b0',
       author='Vilim Stih @portugueslab',
       author_email='vilim@neuro.mpg.de',
+      license='MIT',
       packages=find_packages(),
-      install_requires=['numpy'])
+      install_requires=['numpy'],
+      classifiers=[
+            'Development Status :: 4 - beta',
+
+            'Intended Audience :: Scientific programming, GUI development',
+            'Topic :: Software Development :: Build Tools',
+
+            # Pick your license as you wish (should match "license" above)
+            'License :: OSI Approved :: MIT License',
+
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+      ],
+      keywords='multiprocessing queues arrays',
+      description='Multiprocessing queues for numpy arrays using shared memory',
+      project_urls={
+    'Source': 'https://github.com/portugueslab/arrayqueues',
+    'Tracker': 'https://github.com/portugueslab/arrayqueues/issues',
+      },
+      )
 
