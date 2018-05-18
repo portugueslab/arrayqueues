@@ -2,3 +2,5 @@
 \.idea/
 
 arrayqueues\.egg-info/
+
+arrayqueues/__pycache__/
