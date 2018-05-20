@@ -10,10 +10,28 @@ Attempting to send an array of a different shape or datatype of the previously i
 Only passing of numpy arrays is supported, optionally annotated with timestamps if using the TimestampedArrayQueue class,
 but more complicated structures can be constructed by extending the class.
 
-The package has been tested on Python 3.6 on Windows and MacOS, but should work for other versions of
-Python and operating systems.
+The package has been tested on Python 3.6 on Windows and MacOS and Linux with Travis. Python 2.7 is not supported.
 
+# Usage example
+```python
+from arrayqueues.shared_arrays import ArrayQueue
+from multiprocessing import Process
+import numpy as np
 
+class ReadProcess(Process):
+    def __init__(self, source_queue):
+        super().__init__()
+        self.source_queue = source_queue
+      
+    def run(self):
+        print(self.source_queue.get())
 
-
+if __name__ == "__main__":
+    q = ArrayQueue(1) # intitialises an ArrayQueue which can hold 1MB of data
+    n = np.full((5,5), 5)
+    q.put(n)
+    r = ReadProcess(q)
+    r.start()
+    r.join()
+    
 
