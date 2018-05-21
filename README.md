@@ -1,6 +1,7 @@
 # ArrayQueues
 
 [![Build Status](https://travis-ci.org/portugueslab/arrayqueues.svg?branch=master)](https://travis-ci.org/portugueslab/arrayqueues)
+[![Coverage Status](https://coveralls.io/repos/github/portugueslab/arrayqueues/badge.svg?branch=master)](https://coveralls.io/github/portugueslab/arrayqueues?branch=master)
 
 This package provides a drop-in replacement for the Python multiprocessing Queue class which handles transport of large numpy arrays.
 It avoids pickling and uses the multiprocessing Array class in the background.
