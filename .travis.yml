@@ -4,6 +4,13 @@ python:
  - "3.6"
 
 install:
+ - pip install coveralls
+ - pip install coverage
  - pip install .
  
-script: pytest
+script:
+ - pytest
+ - coverage run --source=arrayqueues
+ 
+after_success:
+ - coveralls
