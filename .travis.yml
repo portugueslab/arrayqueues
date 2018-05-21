@@ -6,11 +6,11 @@ python:
 install:
  - pip install coveralls
  - pip install coverage
+ - pip install pytest-cov
  - pip install .
  
 script:
- - pytest
- - coverage run --source=arrayqueues
+ - pytest --cov=arrayqueues tests/
  
 after_success:
  - coveralls
