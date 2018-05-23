@@ -8,22 +8,30 @@ import time
 
 class SourceProcess(Process):
     def __init__(self, n_items=100, timestamped=False,
-                 n_mbytes=2, wait=0):
+                 n_mbytes=2, wait=0, test_full=False):
         super().__init__()
         self.source_array = TimestampedArrayQueue(max_mbytes=n_mbytes) if timestamped else ArrayQueue(max_mbytes=n_mbytes)
         self.n_items = n_items
-        self.wait=wait
+        self.wait = wait
+        self.test_full = test_full
 
     def run(self):
+        full = False
         for i in range(self.n_items):
             try:
                 self.source_array.put(np.full((100, 100), 5, np.uint8))
                 print("I inserted ", self.source_array.view.i_item)
                 print("Last item read was ", self.source_array.last_item)
             except Full:
-                assert False
+                full = True
+                if not self.test_full:
+                    assert False
             if self.wait > 0:
                 time.sleep(self.wait)
+        if self.test_full and not full:
+            assert False
+        else:
+            assert True
         print(self.source_array.view.total_shape)
 
 
@@ -60,7 +68,7 @@ class TimestampedSinkProcess(Process):
                 time, item = self.source_array.get(timeout=0.5)
                 assert item[0, 0] == 5
                 if previous_time is not None:
-                    assert time>=previous_time
+                    assert time >= previous_time
                 previous_time = time
             except Empty:
                 break
@@ -84,7 +92,9 @@ class TestSample(unittest.TestCase):
         p2.join()
 
     def test_full_queue(self):
-        p1 = SourceProcess(40, n_mbytes=0.2, wait=0.1)
+        # Here we intentionally overfill the queue to test if the right
+        # exception is raised
+        p1 = SourceProcess(40, n_mbytes=0.2, wait=0.1, test_full=True)
         p2 = SinkProcess(source_array=p1.source_array, limit=4)
         p1.start()
         p2.start()
