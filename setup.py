@@ -11,8 +11,9 @@ setup(name='arrayqueues',
       classifiers=[
             'Development Status :: 4 - Beta',
 
-            'Intended Audience :: Scientific programming, GUI development',
-            'Topic :: Software Development :: Build Tools',
+            'Intended Audience :: Developers',
+            'Topic :: Multimedia :: Video',
+            'Topic :: Software Development :: Libraries',
 
             # Pick your license as you wish (should match "license" above)
             'License :: OSI Approved :: MIT License',
