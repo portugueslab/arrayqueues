@@ -9,7 +9,7 @@ setup(name='arrayqueues',
       packages=find_packages(),
       install_requires=['numpy'],
       classifiers=[
-            'Development Status :: 4 - beta',
+            'Development Status :: 4 - Beta',
 
             'Intended Audience :: Scientific programming, GUI development',
             'Topic :: Software Development :: Build Tools',
