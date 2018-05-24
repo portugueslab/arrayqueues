@@ -108,6 +108,7 @@ class TestSample(unittest.TestCase):
         p1.start()
         p1.join()
         p1.source_array.clear()
+        time.sleep(1.0)
         assert p1.source_array.empty()
 
 
