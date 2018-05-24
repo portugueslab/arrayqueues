@@ -79,6 +79,27 @@ class ArrayQueue:
         self.read_queue.put(aritem[2])
         return self.view.pop(aritem[2])
 
+    def clear(self):
+        """ Makes the queue empty
+
+        :return: nothing
+        """
+        self.view = None
+
+        while True:
+            try:
+                self.queue.get()
+            except Empty:
+                break
+
+        while True:
+            try:
+                self.read_queue.get()
+            except Empty:
+                break
+
+        self.last_item = 0
+
 
 class TimestampedArrayQueue(ArrayQueue):
     """ A small extension to support timestamps saved alongside arrays
