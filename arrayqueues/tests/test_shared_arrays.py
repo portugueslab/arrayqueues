@@ -101,4 +101,14 @@ class TestSample(unittest.TestCase):
         p2.join()
         p1.join()
 
+    def test_clearing_queue(self):
+        # Here we intentionally overfill the queue to test if the right
+        # exception is raised
+        p1 = SourceProcess(5, n_mbytes=10)
+        p1.start()
+        p1.join()
+        p1.source_array.clear()
+        assert p1.source_array.empty()
+
+
 

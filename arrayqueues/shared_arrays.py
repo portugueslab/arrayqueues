@@ -3,6 +3,7 @@ import numpy as np
 from datetime import datetime
 from queue import Empty, Full
 
+
 class ArrayView:
     def __init__(self, array, max_bytes, dtype, el_shape, i_item=0):
         self.dtype = dtype
@@ -80,7 +81,8 @@ class ArrayQueue:
         return self.view.pop(aritem[2])
 
     def clear(self):
-        """ Makes the queue empty
+        """ Empties the queue without the need to read all the existing
+        elements
 
         :return: nothing
         """
@@ -88,17 +90,20 @@ class ArrayQueue:
 
         while True:
             try:
-                self.queue.get()
+                self.queue.get(timeout=0.0)
             except Empty:
                 break
 
         while True:
             try:
-                self.read_queue.get()
+                self.read_queue.get(timeout=0.0)
             except Empty:
                 break
 
         self.last_item = 0
+
+    def empty(self):
+        return self.queue.empty()
 
 
 class TimestampedArrayQueue(ArrayQueue):
