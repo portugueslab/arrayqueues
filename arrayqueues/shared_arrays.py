@@ -128,3 +128,32 @@ class TimestampedArrayQueue(ArrayQueue):
                                   *aritem)
         self.read_queue.put(aritem[2])
         return timestamp, self.view.pop(aritem[2])
+
+
+class IndexedArrayQueue(ArrayQueue):
+    """ A small extension to support timestamps saved alongside arrays
+
+        """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.counter = 0
+
+    def put(self, element, timestamp=None):
+
+        if self.view is None or not self.view.fits(element):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  element.dtype, element.shape)
+        qitem = self.view.push(element)
+        if timestamp is None:
+            timestamp = datetime.now()
+
+        self.queue.put((timestamp, self.counter, qitem))
+        self.counter += 1
+
+    def get(self, **kwargs):
+        timestamp, index, aritem = self.queue.get(**kwargs)
+        if self.view is None or not self.view.fits(aritem):
+            self.view = ArrayView(self.array.get_obj(), self.maxbytes,
+                                  *aritem)
+        self.read_queue.put(aritem[2])
+        return timestamp, index, self.view.pop(aritem[2])
