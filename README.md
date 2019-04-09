@@ -12,7 +12,7 @@ Attempting to send an array of a different shape or datatype of the previously i
 Only passing of numpy arrays is supported, optionally annotated with timestamps if using the TimestampedArrayQueue class,
 but other object types can be supported by extending the class.
 
-The package has been tested on Python 3.6 on Windows and MacOS and Linux with Travis. Python 2.7 is not supported.
+The package has been tested on Python 3.6/3/7 on Windows and MacOS and Linux with Travis. Python 2.7 is not supported.
 
 # Usage example
 ```python
