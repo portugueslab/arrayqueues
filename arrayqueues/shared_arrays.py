@@ -54,12 +54,13 @@ class ArrayQueue:
     def check_full(self):
         while True:
             try:
-                self.last_item = self.read_queue.get(timeout=0.000001)
+                self.last_item = self.read_queue.get(timeout=0.00001)
             except Empty:
                 break
         if self.view.i_item == self.last_item:
-            raise Full("Queue of length {} full when trying to insert {}, last item read was {}".format(self.view.n_items,
-                                                                                                        self.view.i_item, self.last_item))
+            raise Full("Queue of length {} full when trying to insert {},"
+                       " last item read was {}".format(self.view.n_items,
+                                                       self.view.i_item, self.last_item))
 
     def put(self, element):
         if self.view is None or not self.view.fits(element):
@@ -87,16 +88,14 @@ class ArrayQueue:
         :return: nothing
         """
         self.view = None
-
         while True:
             try:
-                self.queue.get(timeout=0.0)
+                it = self.queue.get_nowait()
             except Empty:
                 break
-
         while True:
             try:
-                self.read_queue.get(timeout=0.0)
+                it = self.read_queue.get_nowait()
             except Empty:
                 break
 
@@ -115,6 +114,9 @@ class TimestampedArrayQueue(ArrayQueue):
         if self.view is None or not self.view.fits(element):
             self.view = ArrayView(self.array.get_obj(), self.maxbytes,
                                   element.dtype, element.shape)
+        else:
+            self.check_full()
+
         qitem = self.view.push(element)
         if timestamp is None:
             timestamp = datetime.now()
@@ -143,6 +145,9 @@ class IndexedArrayQueue(ArrayQueue):
         if self.view is None or not self.view.fits(element):
             self.view = ArrayView(self.array.get_obj(), self.maxbytes,
                                   element.dtype, element.shape)
+        else:
+            self.check_full()
+
         qitem = self.view.push(element)
         if timestamp is None:
             timestamp = datetime.now()

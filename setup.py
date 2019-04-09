@@ -2,7 +2,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 setup(name='arrayqueues',
-      version='1.1.0b0',
+      version='1.2.0b0',
       author='Vilim Stih @portugueslab',
       author_email='vilim@neuro.mpg.de',
       license='MIT',
