@@ -1,4 +1,5 @@
-from multiprocessing import Queue, Array
+from multiprocessing import Array
+from arrayqueues.portable_queue import Queue
 import numpy as np
 from datetime import datetime
 from queue import Empty, Full
@@ -24,7 +25,8 @@ class ArrayView:
         self.view[self.i_item, ...] = element
         i_inserted = self.i_item
         self.i_item = (self.i_item + 1) % self.n_items
-        return self.dtype, self.el_shape, i_inserted # a tuple is returned to maximise performance
+        # a tuple is returned to maximise performance
+        return self.dtype, self.el_shape, i_inserted
 
     def pop(self, i_item):
         return self.view[i_item, ...]
