@@ -4,7 +4,6 @@ https://gist.github.com/FanchenBao/d8577599c46eab1238a81857bb7277c9
 
 import multiprocessing
 
-
 class SharedCounter(object):
     """ A synchronized shared counter.
 
@@ -34,7 +33,7 @@ class SharedCounter(object):
         return self.count.value
 
 
-class Queue(multiprocessing.queues.Queue):
+class PortableQueue(multiprocessing.queues.Queue):
     """ A portable implementation of multiprocessing.Queue.
 
     Because of multithreading / multiprocessing semantics, Queue.qsize() may
@@ -49,16 +48,25 @@ class Queue(multiprocessing.queues.Queue):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Queue, self).__init__(*args, ctx=multiprocessing.get_context(), **kwargs)
         self.size = SharedCounter(0)
+        super(PortableQueue, self).__init__(*args, ctx=multiprocessing.get_context(), **kwargs)
+
+    def __getstate__(self):
+        state = super(PortableQueue, self).__getstate__()
+        return state + (self.size,)
+
+    def __setstate__(self, state):
+        (self._ignore_epipe, self._maxsize, self._reader, self._writer,
+         self._rlock, self._wlock, self._sem, self._opid, self.size) = state
+        super(PortableQueue, self)._after_fork()
 
     def put(self, *args, **kwargs):
         self.size.increment(1)
-        super(Queue, self).put(*args, **kwargs)
+        super(PortableQueue, self).put(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         self.size.increment(-1)
-        return super(Queue, self).get(*args, **kwargs)
+        return super(PortableQueue, self).get(*args, **kwargs)
 
     def qsize(self):
         """ Reliable implementation of multiprocessing.Queue.qsize() """

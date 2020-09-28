@@ -1,5 +1,5 @@
 from multiprocessing import Array
-from arrayqueues.portable_queue import Queue
+from arrayqueues.portable_queue import PortableQueue
 import numpy as np
 from datetime import datetime
 from queue import Empty, Full
@@ -49,8 +49,8 @@ class ArrayQueue:
         self.maxbytes = int(max_mbytes*1000000)
         self.array = Array('c', self.maxbytes)
         self.view = None
-        self.queue = Queue()
-        self.read_queue = Queue()
+        self.queue = PortableQueue()
+        self.read_queue = PortableQueue()
         self.last_item = 0
 
     def check_full(self):
@@ -105,6 +105,7 @@ class ArrayQueue:
 
     def empty(self):
         return self.queue.empty()
+
 
 
 class TimestampedArrayQueue(ArrayQueue):
