@@ -1,5 +1,9 @@
 from multiprocessing import Array
-from arrayqueues.portable_queue import PortableQueue
+
+#try:
+from arrayqueues.portable_queue import PortableQueue #as Queue
+#except AttributeError:
+    # from multiprocessing import Queue
 import numpy as np
 from datetime import datetime
 from queue import Empty, Full
@@ -105,6 +109,9 @@ class ArrayQueue:
 
     def empty(self):
         return self.queue.empty()
+
+    def qsize(self):
+        return self.queue.qsize()
 
 
 

@@ -108,8 +108,6 @@ def test_full_queue():
 
 
 def test_clearing_queue():
-    # Here we intentionally overfill the queue to test if the right
-    # exception is raised
     p1 = SourceProcess(5, n_mbytes=10)
     p1.start()
     p1.join()

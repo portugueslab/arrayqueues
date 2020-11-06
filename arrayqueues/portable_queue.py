@@ -2,7 +2,7 @@
 https://gist.github.com/FanchenBao/d8577599c46eab1238a81857bb7277c9
 """
 
-import multiprocessing
+from multiprocessing import queues, Value, get_context
 
 class SharedCounter(object):
     """ A synchronized shared counter.
@@ -20,7 +20,7 @@ class SharedCounter(object):
     """
 
     def __init__(self, n=0):
-        self.count = multiprocessing.Value('i', n)
+        self.count = Value('i', n)
 
     def increment(self, n = 1):
         """ Increment the counter by n (default = 1) """
@@ -33,7 +33,7 @@ class SharedCounter(object):
         return self.count.value
 
 
-class PortableQueue(multiprocessing.queues.Queue):
+class PortableQueue(queues.Queue):
     """ A portable implementation of multiprocessing.Queue.
 
     Because of multithreading / multiprocessing semantics, Queue.qsize() may
@@ -49,7 +49,8 @@ class PortableQueue(multiprocessing.queues.Queue):
 
     def __init__(self, *args, **kwargs):
         self.size = SharedCounter(0)
-        super(PortableQueue, self).__init__(*args, ctx=multiprocessing.get_context(), **kwargs)
+        super(PortableQueue, self).__init__(*args, ctx=get_context(),
+                                            **kwargs)
 
     def __getstate__(self):
         state = super(PortableQueue, self).__getstate__()
@@ -61,12 +62,13 @@ class PortableQueue(multiprocessing.queues.Queue):
         super(PortableQueue, self)._after_fork()
 
     def put(self, *args, **kwargs):
-        self.size.increment(1)
         super(PortableQueue, self).put(*args, **kwargs)
+        self.size.increment(1)
 
     def get(self, *args, **kwargs):
+        retrived_val = super(PortableQueue, self).get(*args, **kwargs)
         self.size.increment(-1)
-        return super(PortableQueue, self).get(*args, **kwargs)
+        return retrived_val
 
     def qsize(self):
         """ Reliable implementation of multiprocessing.Queue.qsize() """
@@ -75,3 +77,5 @@ class PortableQueue(multiprocessing.queues.Queue):
     def empty(self):
         """ Reliable implementation of multiprocessing.Queue.empty() """
         return not self.qsize()
+
+
