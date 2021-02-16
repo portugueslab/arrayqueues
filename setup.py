@@ -1,13 +1,20 @@
 from distutils.core import setup
 from setuptools import find_packages
 
+with open("requirements_dev.txt") as f:
+    requirements_dev = f.read().splitlines()
+
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
+
 setup(name='arrayqueues',
       version='1.2.0b0',
       author='Vilim Stih @portugueslab',
       author_email='vilim@neuro.mpg.de',
       license='MIT',
       packages=find_packages(),
-      install_requires=['numpy'],
+      install_requires=requirements,
+      extras_require=dict(dev=requirements_dev),
       classifiers=[
             'Development Status :: 4 - Beta',
 
