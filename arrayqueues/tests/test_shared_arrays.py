@@ -22,7 +22,7 @@ class SourceProcess(Process):
     ):
         super().__init__()
         self.source_array = (
-            IndexedArrayQueue(max_mbytes == n_mbytes)
+            IndexedArrayQueue(max_mbytes=n_mbytes)
             if indexed
             else (
                 TimestampedArrayQueue(max_mbytes=n_mbytes)
