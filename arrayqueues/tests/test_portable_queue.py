@@ -35,10 +35,10 @@ def test_portable_queue():
     p1 = SourceProcess(N_ELEMENTS)
     p2 = SinkProcess(source_queue=p1.source_queue)
     p1.start()
-    time.sleep(1)
+    time.sleep(3)
     assert p1.source_queue.qsize() == N_ELEMENTS
     p2.start()
-    time.sleep(1)
+    time.sleep(3)
     assert p1.source_queue.qsize() == 0
     p2.join()
     p1.join()
