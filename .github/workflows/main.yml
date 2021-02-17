@@ -13,6 +13,7 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
+          run: echo running on branch $github.ref
           python -m pip install --upgrade pip
           pip install .[dev]
       - name: Lint
@@ -53,6 +54,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
