@@ -1,12 +1,13 @@
-from multiprocessing import Array
-
-#try:
-from arrayqueues.portable_queue import PortableQueue #as Queue
-#except AttributeError:
-    # from multiprocessing import Queue
-import numpy as np
 from datetime import datetime
+from multiprocessing import Array
 from queue import Empty, Full
+
+# except AttributeError:
+# from multiprocessing import Queue
+import numpy as np
+
+# try:
+from arrayqueues.portable_queue import PortableQueue  # as Queue
 
 
 class ArrayView:
@@ -122,11 +123,9 @@ class ArrayQueue:
         return self.queue.qsize()
 
 
-
 class TimestampedArrayQueue(ArrayQueue):
     """A small extension to support timestamps saved alongside arrays"""
 
-    """
     def put(self, element, timestamp=None):
 
         if self.view is None or not self.view.fits(element):

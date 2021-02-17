@@ -1,11 +1,14 @@
-from arrayqueues.shared_arrays import ArrayQueue, TimestampedArrayQueue, IndexedArrayQueue
-from multiprocessing import Process
-import multiprocessing.queues
-from  multiprocessing import Queue
-import numpy as np
-from queue import Empty, Full
-import unittest
 import time
+from multiprocessing import Process
+from queue import Empty, Full
+
+import numpy as np
+
+from arrayqueues.shared_arrays import (
+    ArrayQueue,
+    IndexedArrayQueue,
+    TimestampedArrayQueue,
+)
 
 
 class SourceProcess(Process):
@@ -52,7 +55,6 @@ class SourceProcess(Process):
         print(self.source_array.view.total_shape)
 
 
-
 class SinkProcess(Process):
     def __init__(self, source_array, limit=None):
         super().__init__()
@@ -63,7 +65,7 @@ class SinkProcess(Process):
         while True:
             try:
                 item = self.source_array.get(timeout=0.5)
-                print('Got item')
+                print("Got item")
                 assert item[0, 0] == 5
             except Empty:
                 break
@@ -128,6 +130,3 @@ def test_clearing_queue():
     p1.source_array.clear()
     time.sleep(1.0)
     assert p1.source_array.empty()
-
-
-

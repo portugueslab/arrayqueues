@@ -1,7 +1,9 @@
-from multiprocessing import Process
-from arrayqueues.portable_queue import PortableQueue
-from queue import Empty
 import time
+from multiprocessing import Process
+from queue import Empty
+
+from arrayqueues.portable_queue import PortableQueue
+
 
 class SourceProcess(Process):
     def __init__(self, n_elements):
