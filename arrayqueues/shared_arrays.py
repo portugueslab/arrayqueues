@@ -102,12 +102,12 @@ class ArrayQueue:
         self.view = None
         while True:
             try:
-                it = self.queue.get_nowait()
+                _ = self.queue.get_nowait()
             except Empty:
                 break
         while True:
             try:
-                it = self.read_queue.get_nowait()
+                _ = self.read_queue.get_nowait()
             except Empty:
                 break
 

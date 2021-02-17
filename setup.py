@@ -9,7 +9,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="arrayqueues",
-    version="1.2.0b0",
+    version="1.2.0",
     author="Vilim Stih @portugueslab",
     author_email="vilim@neuro.mpg.de",
     license="MIT",
