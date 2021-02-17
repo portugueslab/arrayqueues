@@ -13,7 +13,7 @@ with open("README.md") as f:
 
 setup(
     name="arrayqueues",
-    version="1.3.0",
+    version="1.3.1",
     author="Vilim Stih @portugueslab",
     author_email="vilim@neuro.mpg.de",
     license="MIT",
