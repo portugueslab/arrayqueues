@@ -17,7 +17,8 @@ jobs:
           pip install .[dev]
       - name: Lint
         run: |
-          black ./ --check
+          black . --check
+          isort . --check
           flake8
   test:
     needs: lint
