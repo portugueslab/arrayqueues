@@ -4,16 +4,30 @@ import multiprocessing.queues
 from  multiprocessing import Queue
 import numpy as np
 from queue import Empty, Full
+import unittest
 import time
 
 
 class SourceProcess(Process):
-    def __init__(self, n_items=100, timestamped=False, indexed=False,
-                 n_mbytes=2, wait=0, test_full=False):
+    def __init__(
+        self,
+        n_items=100,
+        timestamped=False,
+        indexed=False,
+        n_mbytes=2,
+        wait=0,
+        test_full=False,
+    ):
         super().__init__()
-        self.source_array = IndexedArrayQueue(max_mbytes==n_mbytes) if indexed \
-            else (TimestampedArrayQueue(max_mbytes=n_mbytes) if timestamped \
-                      else ArrayQueue(max_mbytes=n_mbytes))
+        self.source_array = (
+            IndexedArrayQueue(max_mbytes=n_mbytes)
+            if indexed
+            else (
+                TimestampedArrayQueue(max_mbytes=n_mbytes)
+                if timestamped
+                else ArrayQueue(max_mbytes=n_mbytes)
+            )
+        )
         self.n_items = n_items
         self.wait = wait
         self.test_full = test_full
@@ -114,7 +128,6 @@ def test_clearing_queue():
     p1.source_array.clear()
     time.sleep(1.0)
     assert p1.source_array.empty()
-
 
 
 

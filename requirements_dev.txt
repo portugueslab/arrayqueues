@@ -1,0 +1,7 @@
+pytest-cov
+pytest
+gitpython
+coverage
+pre-commit
+black
+flake8
