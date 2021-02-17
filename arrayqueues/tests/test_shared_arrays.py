@@ -1,13 +1,14 @@
+import time
+from multiprocessing import Process
+from queue import Empty, Full
+
+import numpy as np
+
 from arrayqueues.shared_arrays import (
     ArrayQueue,
-    TimestampedArrayQueue,
     IndexedArrayQueue,
+    TimestampedArrayQueue,
 )
-from multiprocessing import Process
-import numpy as np
-from queue import Empty, Full
-import unittest
-import time
 
 
 class SourceProcess(Process):
@@ -92,39 +93,40 @@ class TimestampedSinkProcess(Process):
                 break
 
 
-class TestSample(unittest.TestCase):
-    def test_shared_queues(self):
-        p1 = SourceProcess(100)
-        p2 = SinkProcess(source_array=p1.source_array)
-        p1.start()
-        p2.start()
-        p1.join()
-        p2.join()
+def test_sample():
+    p1 = SourceProcess(100)
+    p2 = SinkProcess(source_array=p1.source_array)
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
 
-    def test_shared_timestamped_queues(self):
-        p1 = SourceProcess(100, timestamped=True)
-        p2 = TimestampedSinkProcess(source_array=p1.source_array)
-        p1.start()
-        p2.start()
-        p1.join()
-        p2.join()
 
-    def test_full_queue(self):
-        # Here we intentionally overfill the queue to test if the right
-        # exception is raised
-        p1 = SourceProcess(40, n_mbytes=0.2, wait=0.1, test_full=True)
-        p2 = SinkProcess(source_array=p1.source_array, limit=4)
-        p1.start()
-        p2.start()
-        p2.join()
-        p1.join()
+def test_shared_timestamped_queues():
+    p1 = SourceProcess(100, timestamped=True)
+    p2 = TimestampedSinkProcess(source_array=p1.source_array)
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
 
-    def test_clearing_queue(self):
-        # Here we intentionally overfill the queue to test if the right
-        # exception is raised
-        p1 = SourceProcess(5, n_mbytes=10)
-        p1.start()
-        p1.join()
-        p1.source_array.clear()
-        time.sleep(1.0)
-        assert p1.source_array.empty()
+
+def test_full_queue():
+    # Here we intentionally overfill the queue to test if the right
+    # exception is raised
+    # TODO is this actually completed?
+    p1 = SourceProcess(40, n_mbytes=0.2, wait=0.1, test_full=True)
+    p2 = SinkProcess(source_array=p1.source_array, limit=4)
+    p1.start()
+    p2.start()
+    p2.join()
+    p1.join()
+
+
+def test_clearing_queue():
+    p1 = SourceProcess(5, n_mbytes=10)
+    p1.start()
+    p1.join()
+    p1.source_array.clear()
+    time.sleep(1.0)
+    assert p1.source_array.empty()

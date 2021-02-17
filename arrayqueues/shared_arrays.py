@@ -1,7 +1,13 @@
-from multiprocessing import Queue, Array
-import numpy as np
 from datetime import datetime
+from multiprocessing import Array
 from queue import Empty, Full
+
+# except AttributeError:
+# from multiprocessing import Queue
+import numpy as np
+
+# try:
+from arrayqueues.portable_queue import PortableQueue  # as Queue
 
 
 class ArrayView:
@@ -26,11 +32,8 @@ class ArrayView:
         self.view[self.i_item, ...] = element
         i_inserted = self.i_item
         self.i_item = (self.i_item + 1) % self.n_items
-        return (
-            self.dtype,
-            self.el_shape,
-            i_inserted,
-        )  # a tuple is returned to maximise performance
+        # a tuple is returned to maximise performance
+        return self.dtype, self.el_shape, i_inserted
 
     def pop(self, i_item):
         return self.view[i_item, ...]
@@ -56,8 +59,8 @@ class ArrayQueue:
         self.maxbytes = int(max_mbytes * 1000000)
         self.array = Array("c", self.maxbytes)
         self.view = None
-        self.queue = Queue()
-        self.read_queue = Queue()
+        self.queue = PortableQueue()
+        self.read_queue = PortableQueue()
         self.last_item = 0
 
     def check_full(self):
@@ -115,6 +118,9 @@ class ArrayQueue:
 
     def empty(self):
         return self.queue.empty()
+
+    def qsize(self):
+        return self.queue.qsize()
 
 
 class TimestampedArrayQueue(ArrayQueue):
