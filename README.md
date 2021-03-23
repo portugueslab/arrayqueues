@@ -1,6 +1,8 @@
 # ArrayQueues
 
-[![Build Status](https://travis-ci.org/portugueslab/arrayqueues.svg?branch=master)](https://travis-ci.org/portugueslab/arrayqueues)
+[![Python Version](https://img.shields.io/pypi/pyversions/arrayqueues.svg)](https://pypi.org/project/arrayqueues)
+[![Tests](https://img.shields.io/github/workflow/status/portugueslab/arrayqueues/tests)](
+    https://github.com/portugueslab/arrayqueues/actions)
 [![Coverage Status](https://coveralls.io/repos/github/portugueslab/arrayqueues/badge.svg?branch=master)](https://coveralls.io/github/portugueslab/arrayqueues?branch=master)
 [![PyPI version](https://badge.fury.io/py/arrayqueues.svg)](https://badge.fury.io/py/arrayqueues)
 
