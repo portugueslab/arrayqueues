@@ -4,6 +4,8 @@
 [![Tests](https://img.shields.io/github/workflow/status/portugueslab/arrayqueues/tests)](
     https://github.com/portugueslab/arrayqueues/actions)
 [![Coverage Status](https://coveralls.io/repos/github/portugueslab/arrayqueues/badge.svg?branch=master)](https://coveralls.io/github/portugueslab/arrayqueues?branch=master)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/arrayqueues.svg)](https://badge.fury.io/py/arrayqueues)
 
 This package provides a drop-in replacement for the Python multiprocessing Queue class which handles transport of large numpy arrays.
