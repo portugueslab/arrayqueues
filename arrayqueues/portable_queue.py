@@ -3,6 +3,7 @@ https://gist.github.com/FanchenBao/d8577599c46eab1238a81857bb7277c9
 """
 
 from multiprocessing import Value, get_context, queues
+import sys
 
 
 class SharedCounter(object):
@@ -68,7 +69,10 @@ class PortableQueue(queues.Queue):
             self._opid,
             self.size,
         ) = state
-        super(PortableQueue, self)._after_fork()
+        if sys.version_info >= (3, 9):
+            super(PortableQueue, self)._reset()
+        else:
+            super(PortableQueue, self)._after_fork()
 
     def put(self, *args, **kwargs):
         super(PortableQueue, self).put(*args, **kwargs)
