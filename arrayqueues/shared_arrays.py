@@ -127,7 +127,6 @@ class TimestampedArrayQueue(ArrayQueue):
     """A small extension to support timestamps saved alongside arrays"""
 
     def put(self, element, timestamp=None):
-
         if self.view is None or not self.view.fits(element):
             self.view = ArrayView(
                 self.array.get_obj(), self.maxbytes, element.dtype, element.shape
@@ -157,7 +156,6 @@ class IndexedArrayQueue(ArrayQueue):
         self.counter = 0
 
     def put(self, element, timestamp=None):
-
         if self.view is None or not self.view.fits(element):
             self.view = ArrayView(
                 self.array.get_obj(), self.maxbytes, element.dtype, element.shape
